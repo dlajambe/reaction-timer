@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import Block from './components/Block.vue';
+import Results from './components/Results.vue';
 import { ref } from 'vue'
 
 const isPlaying = ref(false);
 const delay = ref();
 const timeTaken = ref();
+const reactionTimes = ref<number[]>([]);
+
 let gamesPlayed: number = 0;
 
 function startGame() {
@@ -16,9 +19,11 @@ function startGame() {
 function endGame(reactionTime: number) {
   isPlaying.value = false;
   timeTaken.value = reactionTime;
+  reactionTimes.value.push(reactionTime);
   gamesPlayed++;
   console.log("Reaction time: " + reactionTime);
   console.log("Games played: " + gamesPlayed);
+  console.log("Reaction times: " + reactionTimes);
 }
 
 </script>
@@ -29,7 +34,7 @@ function endGame(reactionTime: number) {
   </h1>
   <button @click="startGame" :disabled="isPlaying">Play</button>
   <Block v-if="isPlaying" @endGame="endGame" :delay="delay"/>
-  <p v-if="!isPlaying && gamesPlayed > 0">Score: {{ timeTaken }}</p>
+  <Results v-if="!isPlaying && gamesPlayed > 0" :reactionTime="timeTaken" :gameNumber="gamesPlayed"/>
 </template>
 <style>
 
