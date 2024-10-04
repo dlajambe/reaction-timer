@@ -2,22 +2,23 @@
 import Block from './components/Block.vue';
 import { ref } from 'vue'
 
-let isPlaying:boolean = false;
+const isPlaying = ref(false);
 const delay = ref();
 const timeTaken = ref();
-// let startTime = performance.now();
+let gamesPlayed: number = 0;
 
 function startGame() {
-  isPlaying = true;
-  delay.value = Math.random()*(7 - 2) + 2;
+  isPlaying.value = true;
+  delay.value = Math.random()*(5000 - 2000) + 2000;
   console.log(delay.value);
-  startTime = performance.now()
 }
 
-function stopTimer() {
-  timeTaken.value = performance.now() - startTime;
-  isPlaying = false;
-  console.log(timeTaken.value)
+function endGame(reactionTime: number) {
+  isPlaying.value = false;
+  timeTaken.value = reactionTime;
+  gamesPlayed++;
+  console.log("Reaction time: " + reactionTime);
+  console.log("Games played: " + gamesPlayed);
 }
 
 </script>
@@ -26,10 +27,9 @@ function stopTimer() {
   <h1>
     Ninja Reaction Timer
   </h1>
-  <p>{{ delay }}</p>
-  <button @click="startGame">Play</button>
-  <Block @click="stopTimer"/>
-  <
+  <button @click="startGame" :disabled="isPlaying">Play</button>
+  <Block v-if="isPlaying" @endGame="endGame" :delay="delay"/>
+  <p v-if="!isPlaying && gamesPlayed > 0">Score: {{ timeTaken }}</p>
 </template>
 <style>
 
